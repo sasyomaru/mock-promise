@@ -73,11 +73,11 @@ class MockDeferred<T> {
     private resolveHandlers: IHandler<T>[] = [];
     private rejectHandlers: IHandler<any>[] = [];
 
-    public promise: Promise<T> = <Promise<T>>{
-        then: <TResult>(onfulfilled?: (value: T) => TResult | PromiseLike<TResult>,
-                        onrejected?: (reason: any) => TResult | PromiseLike<TResult>) =>
-                        this.then(onfulfilled, onrejected),
-        'catch': (onrejected?: (reason: any) => T | PromiseLike<T>) => this.then(null, onrejected)
+    public promise: IPromise<T> = <IPromise<T>>{
+        then: <TResult>(onfulfilled?: (value: T) => TResult | IPromiseLike<TResult>,
+                        onrejected?: (reason: any) => TResult | IPromiseLike<TResult>) =>
+            this.then(onfulfilled, onrejected),
+        'catch': (onrejected?: (reason: any) => T | IPromiseLike<T>) => this.then(null, onrejected)
     };
 
     public resolve(value: any) {
@@ -137,14 +137,14 @@ class MockDeferred<T> {
     }
 
     public then<TResult>(
-        onfulfilled?: (value: T) => TResult | PromiseLike<TResult>,
-        onrejected?: (reason: any) => TResult | PromiseLike<TResult>): Promise<TResult>;
+        onfulfilled?: (value: T) => TResult | IPromiseLike<TResult>,
+        onrejected?: (reason: any) => TResult | IPromiseLike<TResult>): IPromise<TResult>;
     public then<TResult>(
-        onfulfilled?: (value: T) => TResult | PromiseLike<TResult>,
-        onrejected?: (reason: any) => void): Promise<TResult>;
+        onfulfilled?: (value: T) => TResult | IPromiseLike<TResult>,
+        onrejected?: (reason: any) => void): IPromise<TResult>;
     public then<TResult>(
-        onfulfilled?: (value: T) => TResult | PromiseLike<TResult>,
-        onrejected?: (reason: any) => any): Promise<TResult> {
+        onfulfilled?: (value: T) => TResult | IPromiseLike<TResult>,
+        onrejected?: (reason: any) => any): IPromise<TResult> {
         if (!onfulfilled && !onrejected) return <any>this.promise;
         if (onfulfilled && Object.prototype.toString.apply(onfulfilled) !== '[object Function]') {
             throw new Error('onfulfilled should be a callback function');
@@ -221,15 +221,15 @@ class MockPromise<T> implements IPromise<T>{
         var deferred = new MockDeferred<T>();
         if (executor) {
             executor(
-                (value?: T | PromiseLike<T>) => deferred.resolve(value),
+                (value?: T | IPromiseLike<T>) => deferred.resolve(value),
                 (reason?: any) => deferred.reject(reason));
         }
 
-        this.then = <TResult>(onfulfilled?: (value: T) => TResult | PromiseLike<TResult>,
-                              onrejected?: (reason: any) => TResult | PromiseLike<TResult>) =>
-                        deferred.then(onfulfilled, onrejected);
+        this.then = <TResult>(onfulfilled?: (value: T) => TResult | IPromiseLike<TResult>,
+                              onrejected?: (reason: any) => TResult | IPromiseLike<TResult>) =>
+            deferred.then(onfulfilled, onrejected);
 
-        this.catch = (onrejected?: (reason: any) => T | PromiseLike<T>) => deferred.then(null, onrejected);
+        this.catch = (onrejected?: (reason: any) => T | IPromiseLike<T>) => deferred.then(null, onrejected);
     }
 
     public static all<T>(values: Array<T | IPromiseLike<T>>): IPromise<T[]> {
@@ -264,7 +264,7 @@ class MockPromise<T> implements IPromise<T>{
         return deferred.promise;
     }
 
-    public static race<T>(values: Array<T | PromiseLike<T>>): IPromise<T> {
+    public static race<T>(values: Array<T | IPromiseLike<T>>): IPromise<T> {
         var deferred = new MockDeferred<T>();
         values.forEach((value: any) => {
             if (value && value.then) {
@@ -286,7 +286,7 @@ class MockPromise<T> implements IPromise<T>{
     }
 
     public static resolve(): IPromise<void>;
-    public static resolve<T>(value?: T | PromiseLike<T>): IPromise<T> {
+    public static resolve<T>(value?: T | IPromiseLike<T>): IPromise<T> {
         var deferred = new MockDeferred<T>();
         deferred.resolve(value);
         return deferred.promise;

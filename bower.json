@@ -1,0 +1,19 @@
+{
+  "name": "mock-promise",
+  "homepage": "https://github.com/sasyomaru/mock-promise",
+  "authors": [
+    "Spark Liu <spark.liu.1984@gmail.com>"
+  ],
+  "description": "A ES2015-compatible Promise implementation without initializing a PendingJob, which is useful when writing code for unit test.",
+  "moduleType": [
+    "amd",
+    "node",
+    "es6"
+  ],
+  "keywords": [
+    "mock",
+    "promise",
+    "unit test"
+  ],
+  "license": "Apache-2.0"
+}
