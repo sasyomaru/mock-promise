@@ -7,7 +7,6 @@
   "description": "A ES2015-compatible Promise implementation without initializing a PendingJob, which is useful when writing code for unit test.",
   "moduleType": [
     "amd",
-    "node",
     "es6"
   ],
   "keywords": [
